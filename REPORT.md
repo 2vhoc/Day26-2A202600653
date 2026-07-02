@@ -53,7 +53,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'mcp'
 ```
 
-### 3. Chạy `04-lab/mcp-client/verify_setup.py`
+### 3. Chay verify_setup.py
 
 ```text
 ============================================================
