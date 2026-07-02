@@ -44,7 +44,16 @@ Chúc bạn một ngày tốt lành! 😊
 ### 2. Chạy `04-lab/mcp-server/weather.py`
 
 ```text
-timeout: failed to run command ‘uv’: No such file or directory
+✅ MCP server initialized with Streamable HTTP transport
+🔧 Available tools: get_current_weather, get_forecast, health_check
+🚀 Starting MCP server on http://0.0.0.0:8085/mcp
+INFO:     Started server process [18728]
+INFO:     Waiting for application startup.
+[07/02/26 11:20:55] INFO     StreamableHTTP       streamable_http_manager.py:131
+                             session manager                                    
+                             started                                            
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8085 (Press CTRL+C to quit)
 ```
 
 ### 3. Chạy `04-lab/mcp-client/verify_setup.py`
@@ -73,15 +82,28 @@ Weather Agent Setup Verification
 ✅ weather_agent/__init__.py
 
 🔍 Checking MCP server connectivity...
-❌ Cannot reach MCP server: All connection attempts failed
+✅ MCP server reachable at http://localhost:8085/mcp
 
 🔍 Checking agent import...
-❌ Failed to import agent: No module named 'mcp'
+INFO:weather_agent.agent:🌐 Initializing weather agent with remote MCP server
+INFO:weather_agent.agent:📡 MCP Server: http://localhost:8085/mcp
+INFO:weather_agent.agent:🔌 Connecting to MCP server...
+INFO:weather_agent.agent:✅ MCP toolset created successfully
+INFO:weather_agent.agent:✅ Weather agent initialized with remote MCP tools:
+INFO:weather_agent.agent:   - get_current_weather(city)
+INFO:weather_agent.agent:   - get_forecast(city, days)
+INFO:weather_agent.agent:   - health_check()
+INFO:weather_agent.agent:🎉 Remote MCP connection successful!
+✅ Agent imported successfully: weather_agent
+   Model: gemini-2.5-flash
 
 ============================================================
-❌ Some checks failed
+✅ All checks passed!
 
-⚠️  Fix the issues above and run this script again
+🚀 Ready to start!
+   Or:  uv run adk web
+
+📍 Then open: http://localhost:8000
 ```
 
 ## Cách chạy
@@ -111,5 +133,5 @@ uv run adk web
 
 - `.env` trong repo đang được dùng cho API key của Gemini ở bài Function Calling
 - `weather_function_calling.py` đã chạy được tới output cuối nhờ fallback local, nhưng vẫn báo `403 PERMISSION_DENIED` từ Gemini vì API key bị ràng buộc IP
-- `weather.py` chưa chạy được vì môi trường hiện tại không có `uv`
-- `verify_setup.py` đã nhận `.env` nhưng vẫn fail vì thiếu package `mcp`/`fastmcp` và chưa kết nối được MCP server
+- `weather.py` đã chạy lên MCP server thành công bằng `python3`
+- `verify_setup.py` đã pass toàn bộ sau khi cài dependency và bật MCP server local

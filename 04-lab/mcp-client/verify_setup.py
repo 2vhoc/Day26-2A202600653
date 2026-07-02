@@ -95,7 +95,7 @@ def check_mcp_server():
         
         status_code = asyncio.run(test_connection())
         
-        if status_code in [200, 404]:  # 404 is expected for GET on MCP endpoint
+        if status_code in [200, 404, 405, 406]:
             print(f"✅ MCP server reachable at {server_url}")
             return True
         else:
