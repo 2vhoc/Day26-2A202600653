@@ -15,7 +15,7 @@
    - Kiểm tra và đồng bộ setup client ADK với MCP server local `http://localhost:8085/mcp`
    - Cập nhật script kiểm tra môi trường để phù hợp với README local
 
-## Output chạy thực tế
+## Kết quả chạy thực tế trong môi trường hiện tại
 
 ### 1. Chạy `01-function-calling/weather_function_calling.py`
 
@@ -53,7 +53,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'mcp'
 ```
 
-### 3. Chay verify_setup.py
+### 3. Chạy `04-lab/mcp-client/verify_setup.py`
 
 ```text
 ============================================================
@@ -117,5 +117,5 @@ uv run adk web
 ## Ghi chú
 
 - `.env` trong repo đang được dùng cho API key của Gemini ở bài Function Calling
-- Ở môi trường hiện tại, `weather_function_calling.py` đã chạy được đến bước gọi Gemini nhưng bị `403 PERMISSION_DENIED` vì key đang bị ràng buộc IP
-- `weather.py` và `verify_setup.py` báo thiếu package `mcp`/`fastmcp` trong môi trường hiện tại, nên cần cài dependency đúng env trước khi chạy lab 04
+- `weather_function_calling.py` đã chạy tới bước gọi Gemini nhưng bị `403 PERMISSION_DENIED` vì API key đang bị ràng buộc IP
+- `weather.py` và `verify_setup.py` đều fail trong môi trường hiện tại vì thiếu package `mcp`/`fastmcp` hoặc chưa có `.env` cho bài lab 04
