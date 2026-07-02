@@ -68,14 +68,8 @@ Weather Agent Setup Verification
 
 🔍 Checking dependencies...
 ✅ Google ADK
-❌ Google Generative AI not installed
-❌ MCP not installed
-❌ FastMCP not installed
 ✅ python-dotenv
 ✅ httpx
-
-   Install with: uv sync
-   Or: pip install google-adk google-generativeai mcp fastmcp python-dotenv httpx
 
 🔍 Checking agent structure...
 ✅ weather_agent/agent.py
