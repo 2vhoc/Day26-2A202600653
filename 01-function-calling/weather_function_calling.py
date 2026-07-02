@@ -11,8 +11,25 @@ Cách chạy:
 
 from google import genai
 from google.genai import types
+import os
 
-client = genai.Client()
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+api_key = (
+    os.getenv("GEMINI_API_KEY")
+    or os.getenv("GOOGLE_API_KEY")
+    or os.getenv("API_KEY")
+)
+
+if not api_key:
+    raise RuntimeError(
+        "Missing Gemini API key. Set GEMINI_API_KEY, GOOGLE_API_KEY, or API_KEY in .env"
+    )
+
+client = genai.Client(api_key=api_key)
 
 MODEL = "gemini-2.5-flash"
 
