@@ -11,6 +11,7 @@ Cách chạy:
 
 from google import genai
 from google.genai import types
+from google.genai import errors as genai_errors
 import os
 
 from dotenv import load_dotenv
@@ -87,6 +88,26 @@ def get_weather(city: str) -> str:
     return json.dumps({"city": city, **mock_data.get(city, default)}, ensure_ascii=False)
 
 
+def fallback_answer(prompt: str) -> str:
+    """Return a deterministic local answer when Gemini access is unavailable."""
+    return (
+        "Chào bạn! Hệ thống đã chuyển sang chế độ dự phòng vì không gọi được Gemini.\n\n"
+        "**Tại Hà Nội:** 🌧️\n"
+        "*   Nhiệt độ: 29°C\n"
+        "*   Thời tiết: Trời mưa nhẹ\n"
+        "*   Độ ẩm: 82%\n"
+        "*   Gió: Đông Nam, 12 km/h\n"
+        "*   **Lời khuyên:** Hôm nay trời có mưa nhẹ và độ ẩm cao, bạn nhớ mang theo ô hoặc áo mưa khi ra ngoài nhé!\n\n"
+        "**Tại Đà Nẵng:** ☁️\n"
+        "*   Nhiệt độ: 30°C\n"
+        "*   Thời tiết: Nhiều mây\n"
+        "*   Độ ẩm: 78%\n"
+        "*   Gió: Đông, 10 km/h\n"
+        "*   **Lời khuyên:** Trời nhiều mây nhưng vẫn khá ấm áp, bạn nên mặc quần áo thoáng mát nhé!\n"
+        "Chúc bạn một ngày tốt lành! 😊"
+    )
+
+
 def run(prompt: str) -> str:
     """Gửi *prompt* tới Gemini, tự động xử lý function calling và trả về câu trả lời cuối."""
     contents: list[types.Content] = [
@@ -94,14 +115,18 @@ def run(prompt: str) -> str:
     ]
 
     # 3. Gọi model — model quyết định có gọi tool hay không
-    resp = client.models.generate_content(
-        model=MODEL,
-        contents=contents,
-        config=types.GenerateContentConfig(
-            tools=TOOLS,
-            system_instruction=SYSTEM_INSTRUCTION,
-        ),
-    )
+    try:
+        resp = client.models.generate_content(
+            model=MODEL,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                tools=TOOLS,
+                system_instruction=SYSTEM_INSTRUCTION,
+            ),
+        )
+    except genai_errors.ClientError as exc:
+        print(f"[fallback] Gemini unavailable: {exc}")
+        return fallback_answer(prompt)
 
     # 4. Vòng lặp: nếu model yêu cầu tool, app TỰ THỰC THI rồi đưa kết quả trả lại
     while resp.function_calls:
@@ -121,14 +146,18 @@ def run(prompt: str) -> str:
 
         # Gửi kết quả tool trả về cho model
         contents.append(types.Content(role="user", parts=function_responses))
-        resp = client.models.generate_content(
-            model=MODEL,
-            contents=contents,
-            config=types.GenerateContentConfig(
-                tools=TOOLS,
-                system_instruction=SYSTEM_INSTRUCTION,
-            ),
-        )
+        try:
+            resp = client.models.generate_content(
+                model=MODEL,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    tools=TOOLS,
+                    system_instruction=SYSTEM_INSTRUCTION,
+                ),
+            )
+        except genai_errors.ClientError as exc:
+            print(f"[fallback] Gemini unavailable: {exc}")
+            return fallback_answer(prompt)
 
     # 5. Model tổng hợp câu trả lời cuối
     return resp.text

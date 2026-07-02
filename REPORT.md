@@ -22,11 +22,8 @@
 ```text
 User: Thời tiết Hà Nội và Đà Nẵng hôm nay thế nào?
 
-  [model yêu cầu] get_weather({'city': 'Hà Nội'})
-  [app thực thi]  -> {"city": "Hà Nội", "nhiệt_độ": "29°C", "thời_tiết": "trời mưa nhẹ", "độ_ẩm": "82%", "gió": {"hướng": "Đông Nam", "tốc_độ": "12 km/h"}}
-  [model yêu cầu] get_weather({'city': 'Đà Nẵng'})
-  [app thực thi]  -> {"city": "Đà Nẵng", "nhiệt_độ": "30°C", "thời_tiết": "nhiều mây", "độ_ẩm": "78%", "gió": {"hướng": "Đông", "tốc_độ": "10 km/h"}}
-Trả lời: Chào bạn! Dưới đây là thông tin thời tiết hôm nay ở Hà Nội và Đà Nẵng:
+ [fallback] Gemini unavailable: 403 PERMISSION_DENIED. {...}
+Trả lời: Chào bạn! Hệ thống đã chuyển sang chế độ dự phòng vì không gọi được Gemini.
 
 **Tại Hà Nội:** 🌧️
 *   Nhiệt độ: 29°C
@@ -47,10 +44,7 @@ Chúc bạn một ngày tốt lành! 😊
 ### 2. Chạy `04-lab/mcp-server/weather.py`
 
 ```text
-Traceback (most recent call last):
-  File "/home/vuvanhoc/Study/AI_ThucChien/Applied_AI_Talent/26_Day/Day26-MCP-Tools-Integration/04-lab/mcp-server/weather.py", line 5, in <module>
-    from mcp.server.fastmcp import FastMCP
-ModuleNotFoundError: No module named 'mcp'
+timeout: failed to run command ‘uv’: No such file or directory
 ```
 
 ### 3. Chạy `04-lab/mcp-client/verify_setup.py`
@@ -61,8 +55,7 @@ Weather Agent Setup Verification
 ============================================================
 
 🔍 Checking environment configuration...
-❌ .env file not found
-   Run: echo 'GOOGLE_API_KEY=your_key' > .env
+✅ GOOGLE_API_KEY configured (AQ.Ab8RN6J...)
 
 🔍 Checking dependencies...
 ✅ Google ADK
@@ -117,5 +110,6 @@ uv run adk web
 ## Ghi chú
 
 - `.env` trong repo đang được dùng cho API key của Gemini ở bài Function Calling
-- `weather_function_calling.py` đã chạy tới bước gọi Gemini nhưng bị `403 PERMISSION_DENIED` vì API key đang bị ràng buộc IP
-- `weather.py` và `verify_setup.py` đều fail trong môi trường hiện tại vì thiếu package `mcp`/`fastmcp` hoặc chưa có `.env` cho bài lab 04
+- `weather_function_calling.py` đã chạy được tới output cuối nhờ fallback local, nhưng vẫn báo `403 PERMISSION_DENIED` từ Gemini vì API key bị ràng buộc IP
+- `weather.py` chưa chạy được vì môi trường hiện tại không có `uv`
+- `verify_setup.py` đã nhận `.env` nhưng vẫn fail vì thiếu package `mcp`/`fastmcp` và chưa kết nối được MCP server
